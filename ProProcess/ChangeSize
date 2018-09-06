@@ -1,0 +1,37 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Sep  6 15:39:20 2018
+
+@author: 泼墨
+"""
+
+import tensorflow as tf
+import matplotlib.pyplot as plt
+import mjq_picture
+import numpy as np
+
+image_raw_data = tf.gfile.FastGFile('C:/Users/泼墨/Pictures/cat2.jpg','rb').read()
+with tf.Session() as sess:
+    img_data = tf.image.decode_jpeg(image_raw_data)
+    #将图像数据的类型转为实数类型，便于对图像进行处理
+    img_data = tf.image.convert_image_dtype(img_data,dtype=tf.float32) 
+    resized_1 = tf.image.resize_images(img_data,[300,300],method=0)
+    resized_2 = tf.image.resize_images(img_data,[300,300],method=1)
+    resized_3 = tf.image.resize_images(img_data,[300,300],method=2)
+    resized_4 = tf.image.resize_images(img_data,[300,300],method=3)
+    
+    #将Tensorflow中的张量保存到numpy中的数组
+    data = np.array(img_data.eval())
+    data1 = np.array(resized_1.eval())
+    data2 = np.array(resized_2.eval())
+    data3 = np.array(resized_3.eval())
+    data4 = np.array(resized_4.eval())
+    #print(data.dtype)
+    fig = plt.figure(figsize = (30,10))
+    mjq_picture.set_picture_location(data,241,'raw','on')
+    mjq_picture.set_picture_location(data1,245,'img1','on')
+    mjq_picture.set_picture_location(data2,246,'img1','on')
+    mjq_picture.set_picture_location(data3,247,'img1','on')
+    mjq_picture.set_picture_location(data4,248,'img1','on')
+    #指明show()函数来自的包，不会报错
+    plt.show()
