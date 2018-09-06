@@ -1,0 +1,60 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Sep  6 10:04:16 2018
+
+@author: 泼墨
+"""
+from PIL import Image
+from pylab import *
+import matplotlib.pyplot as plt
+import mjq_picture
+import cv2
+
+#导入图片，转化成array数组
+row_image = array(Image.open("cat.jpg"))
+#直接获得灰度图函数：
+gray_image = array(Image.open("cat.jpg").convert('L'))
+#imshow(im)
+picture_shape = row_image.shape
+#获取图片行列信息
+pic_row = picture_shape[0]
+pic_column = picture_shape[1]
+#声明二维数组，用于存放灰度图片信息
+gray_image_1 = array([[0]*pic_column]*pic_row)
+gray_image_2 = array([[0]*pic_column]*pic_row)
+gray_image_3 = array([[0]*pic_column]*pic_row)
+
+#以最大值获得灰度图算法
+for i in range(pic_row):
+    for j in range(pic_column):
+        gray_image_1[i][j]=max(row_image[i][j][0],row_image[i][j][1],row_image[i][j][2])
+        
+#以平均值获得灰度图算法：
+for i in range(pic_row):
+    for j in range(pic_column):
+        gray_image_2[i][j]=(row_image[i][j][0]+row_image[i][j][1]+row_image[i][j][2])/3
+        
+#以加权平均值法获得灰度图算法：由于人眼对绿色最为敏感，红色次之，对蓝色的敏感性最低，因此使将得到
+#较易识别的灰度图像。一般时，得到的灰度图像效果最好。 
+for i in range(pic_row):
+    for j in range(pic_column):
+        gray_image_3[i][j]=(0.3*row_image[i][j][0]+0.59*row_image[i][j][1]+0.11*row_image[i][j][2])/3
+        
+#思考为什么不用格式转化       
+#gray_image = cv2.cvtColor(gray_image, cv2.COLOR_BGR2RGB)
+#row_image = cv2.cvtColor(row_image, cv2.COLOR_BGR2RGB)
+
+fig = plt.figure(figsize=(7,3))
+mjq_picture.set_picture_location(row_image,231,'row_image','off')
+mjq_picture.set_picture_location(gray_image,232,'gray_image','off')
+mjq_picture.set_picture_location(gray_image_1,233,'gray_image_max','off')
+mjq_picture.set_picture_location(gray_image_2,234,'gray_image_avg','off')
+mjq_picture.set_picture_location(gray_image_3,235,'gray_image_weight','off')
+
+show()
+
+
+
+
+
+
