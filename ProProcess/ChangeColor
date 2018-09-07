@@ -1,0 +1,62 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Sep  7 10:28:49 2018
+
+@author: 泼墨
+"""
+
+import tensorflow as tf
+import numpy as np
+import mjq_picture
+import matplotlib.pyplot as plt
+raw_data = tf.gfile.FastGFile('C:/Users/泼墨/Pictures/cat2.jpg','rb').read()
+
+with tf.Session() as sess:
+    image_data = tf.image.decode_jpeg(raw_data) 
+    image_raw_data = tf.image.convert_image_dtype(image_data,dtype=tf.float32)
+    #色彩调整算法：包括亮度，对比度，饱和度和色相
+    #亮度
+    image_adjust_bright = tf.image.adjust_brightness(image_raw_data, 0.5)  #将图像的亮度+0.5，值可正负
+    image_random_adjust_brightness = tf.image.random_brightness(image_raw_data, max_delta=0.5)  #在[-0.5,0.5]范围内随机调整图像亮度
+    #对比度
+    image_adjust_contrast = tf.image.adjust_contrast(image_raw_data,5)
+    image_random_adjust_contrast = tf.image.random_contrast(image_raw_data, lower=0, upper=5)  #随机调整对比度,最低值要求非负，思考为什么
+    #饱和度
+    image_adjust_saturation = tf.image.adjust_saturation(image_raw_data, -5)  #将饱和度-5 
+    image_random_adjust_saturation = tf.image.random_saturation(image_raw_data,0.1,0.6)  #随机调整饱和度,设置相应参数，0.1是下限，0.6是上限
+    #色相
+    image_adjust_hue = tf.image.adjust_hue(image_raw_data, 0.5)  #将色相+0.5
+    image_random_adjust_hue = tf.image.random_hue(image_raw_data, max_delta=0.5)  #随机调整色相
+    #标准化函数
+    image_standardization = tf.image.per_image_standardization(image_raw_data)
+    #将Tensorflow中的张量保存到numpy中的数组
+    data  = np.array(image_raw_data.eval())
+    data1 = np.array(image_adjust_bright.eval())
+    data2 = np.array(image_random_adjust_brightness.eval())
+    data3 = np.array(image_adjust_contrast.eval())
+    data4 = np.array(image_random_adjust_contrast.eval())  
+    data5 = np.array(image_adjust_saturation.eval())
+    data6 = np.array(image_random_adjust_saturation.eval())
+    data7 = np.array(image_adjust_hue.eval())
+    data8 = np.array(image_random_adjust_hue.eval())  
+    data9 = np.array(image_standardization.eval())
+    #显示
+    fig = plt.figure(figsize=(15,15))
+    mjq_picture.set_picture_location(data ,341,'raw','on')
+    mjq_picture.set_picture_location(data1,342,'image_adjust_bright','on')
+    mjq_picture.set_picture_location(data2,343,'image_random_adjust_brightness','on')
+    mjq_picture.set_picture_location(data3,344,'image_adjust_contrast','on')
+    mjq_picture.set_picture_location(data4,345,'image_random_adjust_contrast','on')
+    mjq_picture.set_picture_location(data5,346,'image_adjust_saturation','on')
+    mjq_picture.set_picture_location(data6,347,'image_random_adjust_saturation','on')
+    mjq_picture.set_picture_location(data7,348,'image_adjust_hue','on')
+    mjq_picture.set_picture_location(data8,349,'image_random_adjust_hue','on')   
+    #指明show()函数来自的包，不会报错
+    plt.show()
+    
+    fig = plt.figure(figsize=(15,15))
+    mjq_picture.set_picture_location(data9 ,341,'image_standardization','on')
+    plt.show()
+    
+
+    
