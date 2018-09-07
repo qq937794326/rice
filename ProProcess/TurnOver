@@ -1,0 +1,41 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Sep  6 16:40:35 2018
+
+@author: 泼墨
+"""
+import tensorflow as tf
+import matplotlib.pyplot as plt
+import mjq_picture
+
+with tf.Session() as sess:
+    image_raw_data = tf.gfile.FastGFile('C:/Users/泼墨/Pictures/cat2.jpg', 'rb').read()
+    img_data = tf.image.decode_jpeg(image_raw_data)
+    img_data = tf.image.convert_image_dtype(img_data, dtype=tf.float32)
+    #图像翻转函数
+    pic_flip_up_down = tf.image.flip_up_down(img_data)  # 上下
+    pic_flip_left_right = tf.image.flip_left_right(img_data)  # 左右
+    pic_transposed = tf.image.transpose_image(img_data)  # 对角线
+    #随机翻转图像函数
+    pic_random_flip_up_down = tf.image.random_flip_up_down(img_data)  # 随机上下
+    pic_random_flip_left_right = tf.image.random_flip_left_right(img_data)  # 随机左右
+    
+    #将Tensorflow中的张量保存到numpy中的数组
+    data = np.array(img_data.eval())
+    data1 = np.array(pic_flip_up_down.eval())
+    data2 = np.array(pic_flip_left_right.eval())
+    data3 = np.array(pic_transposed.eval())
+    data4 = np.array(pic_random_flip_up_down.eval())
+    data5 = np.array(pic_random_flip_left_right.eval())
+    #多照片显示
+    fig = plt.figure(figsize = (20,10))
+    mjq_picture.set_picture_location(data,231,'raw','on')
+    mjq_picture.set_picture_location(data1,232,'flip_up_down','on')
+    mjq_picture.set_picture_location(data2,233,'flip_left_right','on')
+    mjq_picture.set_picture_location(data3,234,'transpose_image','on')
+    mjq_picture.set_picture_location(data4,235,'random_flip_up_down','on')
+    mjq_picture.set_picture_location(data5,236,'random_flip_left_right','on')
+    #指明show()函数来自的包，不会报错
+    plt.show()
+
+
