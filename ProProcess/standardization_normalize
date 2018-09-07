@@ -1,0 +1,40 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Sep  7 18:36:00 2018
+
+@author: 泼墨
+"""  
+#归一化函数
+#normalize(src,dst,alpha,beta,norm_type,dtype,mask)
+'''
+src, // 表示输入图像， numpy类型
+dst, // 表示归一化之后图像， numpy类型
+alpha=None, // 归一化中低值 min
+beta=None, // 归一化中的高值max
+norm_type=None, // 归一化方法，选择最大最小值归一化 NORM_MINMAX，
+dtype=None, // 归一化之后numpy数据类型，一般选择cv.CV_32F
+mask=None //遮罩层，默认设置为None
+'''
+#格式转换
+#cv.imshow("norm", np.uint8(result*255.0))
+import tensorflow as tf
+import cv2 as cv
+import numpy as np
+import mjq_picture
+import matplotlib.pyplot as plt
+#原图
+image = cv.imread("cat3.jpg")
+result = np.zeros(image.shape, dtype=np.float32)
+#归一化函数
+cv.normalize(image, result, alpha=0, beta=1, norm_type=cv.NORM_MINMAX, dtype=cv.CV_32F)
+#标准化函数
+std_image = tf.image.per_image_standardization(image)
+with tf.Session() as sess:
+    image_std = sess.run(std_image)
+    fig = plt.figure(figsize=(10,10))
+    mjq_picture.set_picture_location(image,131,'raw','on')
+    mjq_picture.set_picture_location(result,132,'image_normalize','on')
+    mjq_picture.set_picture_location(image_std,133,'image_standardization','on')
+    plt.show()
+
+    
