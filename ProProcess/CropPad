@@ -1,0 +1,60 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Sep  4 14:42:21 2018
+
+@author: 泼墨
+"""
+
+import tensorflow as tf
+import matplotlib.pyplot as plt
+import mjq_picture
+import numpy as np
+
+image_raw_data = tf.gfile.FastGFile('C:/Users/泼墨/Pictures/cat2.jpg','rb').read()
+'''
+def show(img_data):
+    plt.imshow(img_data.eval())
+    plt.show()
+'''
+#eval()函数等同于run()函数
+with tf.Session() as sess:
+    #解码
+    img_raw_data = tf.image.decode_jpeg(image_raw_data)
+    #将图像数据的类型转为实数类型，便于对图像进行处理
+    img_data = tf.image.convert_image_dtype(img_data,dtype=tf.float32) 
+    '''图像裁剪或填充,大于原图则填充，小于则裁剪居中部分'''
+    # 第一个参数为原始图像
+    # 第二个和第三个参数是调整后的图像大小，大于原图则填充，小于则裁剪居中部分
+    img_croped = tf.image.resize_image_with_crop_or_pad(img_data,200, 200)
+    img_padded = tf.image.resize_image_with_crop_or_pad(img_data, 500, 600)
+    # 用central_crop调整图像大小,同为裁剪
+    # 第一个参数是原始图像
+    # 第二个参数为调整比例，是(0,1]的实数
+    img_central_cropped = tf.image.central_crop(img_data, 0.5)
+    
+    #将Tensorflow中的张量保存到numpy中的数组
+    data_1 = np.array(img_data.eval())
+    data_2 = np.array(img_croped.eval())
+    data_3 = np.array(img_padded.eval())
+    data_4 = np.array(img_central_cropped.eval())
+    
+    fig = plt.figure(figsize = (15,10))
+    mjq_picture.set_picture_location(data_1,221,'raw_pic','on')
+    mjq_picture.set_picture_location(data_2,222,'croped_pic','on')
+    mjq_picture.set_picture_location(data_3,223,'padded_pic','on')
+    mjq_picture.set_picture_location(data_4,224,'central_cropped_pic','on')
+    
+    plt.show()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
